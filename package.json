@@ -10,7 +10,8 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "lint": "eslint ."
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -28,7 +29,13 @@
     ]
   },
   "devDependencies": {
+    "@types/node": "^22.13.1",
+    "@types/react": "^19.0.8",
+    "@types/react-dom": "^19.0.3",
     "@vitejs/plugin-react": "^4.3.4",
+    "eslint-config-wesbos": "^4.3.2",
+    "prettier": "^3.4.2",
+    "typescript": "^5.7.3",
     "vite": "^6.1.0"
   }
 }

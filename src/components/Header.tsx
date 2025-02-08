@@ -1,23 +1,43 @@
 import { Button } from 'antd';
-import React from 'react';
+import styled from 'styled-components';
+
+const StyledHeader = styled.header`
+    padding: 20px 0;
+    line-height: 2em;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    @media (max-width: 768px) {
+        flex-direction: column;
+        align-items: center;
+    }
+`;
+
+const Title = styled.h1`
+    font-size: 25px;
+    margin-bottom: 15px;
+    @media (max-width: 768px) {
+        margin-bottom: 1rem;
+    }
+`;
+
+const Subtitle = styled.p`
+    font-size: 19px;
+    @media (max-width: 768px) {
+        font-size: 16px;
+        margin-bottom: 1rem;
+    }
+`;
 
 const Header = ({ openSideBar }: { openSideBar: () => void }) => {
-    const headerStyle = {
-        padding: '20px 0',
-        lineHeight: '2em',
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-    };
     return (
-        <header style={headerStyle}>
-            <h1 style={{ fontSize: '25px', marginBottom: '15px' }}>Simple Todo App</h1>
-            <p style={{ fontSize: '19px' }}>Add as many to-dos as your heart desires ❤️</p>
+        <StyledHeader>
+            <Title>Simple Todo App</Title>
+            <Subtitle>Add as many to-dos as your heart desires ❤️</Subtitle>
             <Button type="primary" onClick={openSideBar}>
-                {' '}
                 Add ToDo
             </Button>
-        </header>
+        </StyledHeader>
     );
 };
 

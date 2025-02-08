@@ -1,38 +1,23 @@
 import React, { useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import Header from '../components/Header';
 import { Status, Todo } from '../types';
 import SideBar from '../components/SideBar';
 import TaskForm from '../components/Form';
 import Board from '../components/Board';
+import { getTodos } from '../services/getTodos';
+import { updateTodo } from '../services/updateTodo';
 
 const TodoContainer: React.FC = () => {
     const [openSideBar, setOpenSideBar] = useState(false);
 
-    const [todos, setTodos] = useState<Todo[]>([
-        {
-            id: uuidv4(),
-            title: 'Setup development environment',
-            description: 'Setup development environment',
-            user: {
-                id: uuidv4(),
-                name: 'John Doe',
-                profileUrl: 'https://api.dicebear.com/9.x/adventurer/svg?seed=Andrea',
-            },
-            status: 'completed',
-        },
-        {
-            id: uuidv4(),
-            title: 'Setup development environment',
-            description: 'Setup development environment',
-            user: {
-                id: uuidv4(),
-                name: 'Sawyer',
-                profileUrl: 'https://api.dicebear.com/9.x/adventurer/svg?seed=Andrea',
-            },
-            status: 'backlog',
-        },
-    ]);
+    const query = useQuery({ queryKey: ['todos'], queryFn: getTodos });
+    const mutation = useMutation({
+        mutationFn: updateTodo,
+    });
+
+    const [todos, setTodos] = useState<Todo[]>();
 
     const users = [
         {

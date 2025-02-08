@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import Header from '../components/Header';
 import { Status, Todo } from '../types';
 import SideBar from '../components/SideBar';
@@ -11,13 +11,15 @@ import { updateTodo } from '../services/updateTodo';
 
 const TodoContainer: React.FC = () => {
     const [openSideBar, setOpenSideBar] = useState(false);
+    const queryClient = useQueryClient();
 
     const query = useQuery({ queryKey: ['todos'], queryFn: getTodos });
     const mutation = useMutation({
         mutationFn: updateTodo,
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['todos'] });
+        },
     });
-
-    const [todos, setTodos] = useState<Todo[]>();
 
     const users = [
         {
@@ -33,21 +35,11 @@ const TodoContainer: React.FC = () => {
     ];
 
     const handleChange = (id: string, status: Status) => {
-        setTodos(
-            todos.map((todo) => {
-                if (todo.id === id) {
-                    return {
-                        ...todo,
-                        status,
-                    };
-                }
-                return todo;
-            })
-        );
+        mutation.mutate({ id, status });
     };
 
     const delTodo = (id: string) => {
-        setTodos(todos.filter((todo) => todo.id !== id));
+        setTodos(query.data?.filter((todo) => todo.id !== id));
     };
 
     const addTodoItem = (data: { title: string; description: string; user: string; status: string }) => {
@@ -64,7 +56,6 @@ const TodoContainer: React.FC = () => {
             },
             status: 'backlog',
         } as Todo;
-        setTodos([...todos, newTodo]);
     };
 
     const openSideBarHandler = () => {
@@ -75,9 +66,17 @@ const TodoContainer: React.FC = () => {
         setOpenSideBar(false);
     };
 
-    const backlogData = todos.filter((todo) => todo.status === 'backlog');
-    const inProgressData = todos.filter((todo) => todo.status === 'inProgress');
-    const completedData = todos.filter((todo) => todo.status === 'completed');
+    if (query.isLoading) {
+        return <div>Loading...</div>;
+    }
+
+    if (query.isError || !query.data) {
+        return <div>Error</div>;
+    }
+
+    const backlogData = query.data?.filter((todo) => todo.status === 'backlog');
+    const inProgressData = query.data?.filter((todo) => todo.status === 'inProgress');
+    const completedData = query.data?.filter((todo) => todo.status === 'completed');
 
     return (
         <div className="container">

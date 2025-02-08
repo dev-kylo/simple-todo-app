@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 import { createRoot } from 'react-dom/client';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import TodoContainer from './components/TodoContainer';
+import TodoContainer from './container/TodoContainer';
 import { startMockedService } from './mocks/browser';
 import './App.css';
 

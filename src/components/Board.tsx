@@ -9,8 +9,20 @@ const BoardContainer = styled.div`
     display: flex;
     gap: 24px;
     padding: 24px;
-    min-height: 100vh;
+    min-height: calc(100vh - 48px);
     background-color: #1a1a1a;
+    overflow-x: auto;
+    width: 100%;
+    &::-webkit-scrollbar {
+        height: 8px;
+    }
+    &::-webkit-scrollbar-track {
+        background: #2a2a2a;
+    }
+    &::-webkit-scrollbar-thumb {
+        background: #4a4a4a;
+        border-radius: 4px;
+    }
 `;
 
 const Board = ({

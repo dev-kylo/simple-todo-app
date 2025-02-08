@@ -18,11 +18,15 @@ const TaskForm = ({ onFinish, users }: { onFinish: (values: any) => void; users:
             rules={[{ required: true, message: 'Please select a user!' }]}
             style={{ marginBottom: '1.5rem' }}
         >
-            <Select style={{ width: 120, height: 50 }}>
+            <Select style={{ height: 50 }}>
                 {users?.map((user) => (
                     <Select.Option key={user.id} value={user.id}>
-                        <div style={{ display: 'flex', alignItems: 'center' }}>
-                            <img src={user.profileUrl} alt="" style={{ width: '40px', height: '40px' }} />
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                            <img
+                                src={user.profileUrl}
+                                alt=""
+                                style={{ width: '40px', height: '40px', marginRight: '2rem' }}
+                            />
                             {user.name}
                         </div>
                     </Select.Option>

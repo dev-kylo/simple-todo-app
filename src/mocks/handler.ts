@@ -3,34 +3,66 @@ import { http, HttpResponse } from 'msw';
 import { v4 as uuidv4 } from 'uuid';
 import { Todo, Status } from '../types';
 
-const data = [
+const users = [
     {
         id: uuidv4(),
-        title: 'Setup development environment',
-        description: 'Setup development environment',
-        user: {
-            id: uuidv4(),
-            name: 'John Doe',
-            profileUrl: 'https://api.dicebear.com/9.x/adventurer/svg?seed=Andrea',
-        },
-        status: 'completed',
+        name: 'John Doe',
+        profileUrl: 'https://api.dicebear.com/9.x/adventurer/svg?seed=Andrea',
     },
     {
         id: uuidv4(),
-        title: 'Setup development environment',
-        description: 'Setup development environment',
+        name: 'Sawyer',
+        profileUrl: 'https://api.dicebear.com/9.x/adventurer/svg?seed=Sawyer',
+    },
+    {
+        id: uuidv4(),
+        name: 'Max',
+        profileUrl: 'https://api.dicebear.com/9.x/adventurer/svg?seed=Max',
+    },
+];
+
+const data = [
+    {
+        id: uuidv4(),
+        title: 'Complete the todo app',
+        description: 'Finish all remaining subtasks',
+        user: {
+            id: uuidv4(),
+            name: 'Andrea',
+            profileUrl: 'https://api.dicebear.com/9.x/adventurer/svg?seed=Andrea',
+        },
+        status: 'backlog',
+    },
+    {
+        id: uuidv4(),
+        title: 'Allow editing todos',
+        description: 'Add edit button to each todo',
+        user: {
+            id: uuidv4(),
+            name: 'Sawyer',
+            profileUrl: 'https://api.dicebear.com/9.x/adventurer/svg?seed=Sawyer',
+        },
+        status: 'backlog',
+    },
+    {
+        id: uuidv4(),
+        title: 'Write more e2e tests',
+        description: 'Test adding and updating todos.',
         user: {
             id: uuidv4(),
             name: 'Sawyer',
             profileUrl: 'https://api.dicebear.com/9.x/adventurer/svg?seed=Andrea',
         },
-        status: 'backlog',
+        status: 'inProgress',
     },
 ] as Todo[];
 
 export const handlers = [
     http.get('https://mymockapi/getTodos', () => {
         return HttpResponse.json(data);
+    }),
+    http.get('https://mymockapi/getUsers', () => {
+        return HttpResponse.json(users);
     }),
     http.post('https://mymockapi/addTodo', async ({ request }) => {
         const todoData = (await request.json()) as Todo;
@@ -39,8 +71,7 @@ export const handlers = [
         }
         todoData.id = uuidv4();
         todoData.status = 'backlog';
-        todoData.user.name = 'Max';
-        todoData.user.profileUrl = 'https://api.dicebear.com/9.x/adventurer/svg?seed=Max';
+        todoData.user = users.find((user) => user.id === todoData.user.id)!;
         data.push(todoData);
         return HttpResponse.json(todoData);
     }),

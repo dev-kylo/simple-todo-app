@@ -2,7 +2,7 @@ import { Button, Form, Input, Select } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
 import { Todo } from '../types';
 
-const TaskForm = ({ onFinish, users }: { onFinish: (values: any) => void; users: Todo['user'][] }) => (
+const TaskForm = ({ onFinish, users }: { onFinish: (values: any) => void; users?: Todo['user'][] }) => (
     <Form
         name="basic"
         initialValues={{ remember: true }}
@@ -18,7 +18,7 @@ const TaskForm = ({ onFinish, users }: { onFinish: (values: any) => void; users:
             rules={[{ required: true, message: 'Please select a user!' }]}
             style={{ marginBottom: '1.5rem' }}
         >
-            <Select style={{ height: 50 }}>
+            <Select style={{ height: 50 }} loading={!users}>
                 {users?.map((user) => (
                     <Select.Option key={user.id} value={user.id}>
                         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>

@@ -9,12 +9,16 @@ import Board from '../components/Board';
 import { getTodos } from '../services/getTodos';
 import { updateTodo } from '../services/updateTodo';
 import { addTodo } from '../services/addTodo';
+import { getUsers } from '../services/getUsers';
 
 const TodoContainer = () => {
     const [openSideBar, setOpenSideBar] = useState(false);
     const queryClient = useQueryClient();
-
+    // Queries
     const query = useQuery({ queryKey: ['todos'], queryFn: getTodos });
+    const usersQuery = useQuery({ queryKey: ['users'], queryFn: getUsers });
+
+    // Mutations
     const updateMutation = useMutation({
         mutationFn: updateTodo,
         onSuccess: () => {
@@ -27,19 +31,6 @@ const TodoContainer = () => {
             queryClient.invalidateQueries({ queryKey: ['todos'] });
         },
     });
-
-    const users = [
-        {
-            id: uuidv4(),
-            name: 'John Doe',
-            profileUrl: 'https://api.dicebear.com/9.x/adventurer/svg?seed=Andrea',
-        },
-        {
-            id: uuidv4(),
-            name: 'Sawyer',
-            profileUrl: 'https://api.dicebear.com/9.x/adventurer/svg?seed=Andrea',
-        },
-    ];
 
     const handleChange = (id: string, status: Status) => {
         updateMutation.mutate({ id, status });
@@ -81,7 +72,7 @@ const TodoContainer = () => {
         <div className="container">
             <Header openSideBar={openSideBarHandler} />
             <SideBar open={openSideBar} onClose={closeSideBarHandler}>
-                <TaskForm onFinish={addTodoItem} users={users} />
+                <TaskForm onFinish={addTodoItem} users={usersQuery?.data} />
             </SideBar>
             <Board
                 updateCardStatus={handleChange}

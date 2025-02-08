@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import Header from '../components/Header';
@@ -8,14 +8,21 @@ import TaskForm from '../components/Form';
 import Board from '../components/Board';
 import { getTodos } from '../services/getTodos';
 import { updateTodo } from '../services/updateTodo';
+import { addTodo } from '../services/addTodo';
 
-const TodoContainer: React.FC = () => {
+const TodoContainer = () => {
     const [openSideBar, setOpenSideBar] = useState(false);
     const queryClient = useQueryClient();
 
     const query = useQuery({ queryKey: ['todos'], queryFn: getTodos });
-    const mutation = useMutation({
+    const updateMutation = useMutation({
         mutationFn: updateTodo,
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['todos'] });
+        },
+    });
+    const addMutation = useMutation({
+        mutationFn: addTodo,
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['todos'] });
         },
@@ -35,27 +42,19 @@ const TodoContainer: React.FC = () => {
     ];
 
     const handleChange = (id: string, status: Status) => {
-        mutation.mutate({ id, status });
-    };
-
-    const delTodo = (id: string) => {
-        setTodos(query.data?.filter((todo) => todo.id !== id));
+        updateMutation.mutate({ id, status });
     };
 
     const addTodoItem = (data: { title: string; description: string; user: string; status: string }) => {
         setOpenSideBar(false);
-        const { title, description, user: userId, status } = data;
+        const { title, description, user: userId } = data;
         const newTodo = {
-            id: uuidv4(),
             title,
             description,
-            user: {
-                id: userId,
-                name: 'Max',
-                profileUrl: users.find((user) => user.id === userId)?.profileUrl,
-            },
+            user: { id: userId },
             status: 'backlog',
         } as Todo;
+        addMutation.mutate(newTodo);
     };
 
     const openSideBarHandler = () => {
@@ -67,11 +66,11 @@ const TodoContainer: React.FC = () => {
     };
 
     if (query.isLoading) {
-        return <div>Loading...</div>;
+        return <div className="container">Loading...</div>;
     }
 
     if (query.isError || !query.data) {
-        return <div>Error</div>;
+        return <div className="container">Error</div>;
     }
 
     const backlogData = query.data?.filter((todo) => todo.status === 'backlog');

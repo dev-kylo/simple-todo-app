@@ -1,11 +1,14 @@
-\import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
-import TodosList from '../components/TodosList';
 import Header from '../components/Header';
-import InputTodo from '../components/InputTodo';
 import { Todo } from '../types';
+import SideBar from '../components/SideBar';
+import TaskForm from '../components/Form';
+import Board from '../components/Board';
 
 const TodoContainer: React.FC = () => {
+    const [openSideBar, setOpenSideBar] = useState(false);
+
     const [todos, setTodos] = useState<Todo[]>([
         {
             id: uuidv4(),
@@ -16,7 +19,7 @@ const TodoContainer: React.FC = () => {
                 name: 'John Doe',
                 profileUrl: 'https://api.dicebear.com/9.x/adventurer/svg?seed=Andrea',
             },
-            status: 'backlog',
+            status: 'completed',
         },
         {
             id: uuidv4(),
@@ -29,8 +32,20 @@ const TodoContainer: React.FC = () => {
             },
             status: 'backlog',
         },
-
     ]);
+
+    const users = [
+        {
+            id: uuidv4(),
+            name: 'John Doe',
+            profileUrl: 'https://api.dicebear.com/9.x/adventurer/svg?seed=Andrea',
+        },
+        {
+            id: uuidv4(),
+            name: 'Sawyer',
+            profileUrl: 'https://api.dicebear.com/9.x/adventurer/svg?seed=Andrea',
+        },
+    ];
 
     const handleChange = (id: string) => {
         setTodos(
@@ -50,32 +65,42 @@ const TodoContainer: React.FC = () => {
         setTodos(todos.filter((todo) => todo.id !== id));
     };
 
-    const addTodoItem = (todo: Todo) => {
-
-        const { title, description, user, status } = todo;
+    const addTodoItem = (data: { title: string; description: string; user: string; status: string }) => {
+        setOpenSideBar(false);
+        const { title, description, user: userId, status } = data;
         const newTodo = {
             id: uuidv4(),
             title,
-            description: '',
+            description,
             user: {
-                id: uuidv4(),
-                name: 'John Doe',
-                profileUrl: 'https://api.dicebear.com/9.x/adventurer/svg?seed=Andrea',
+                id: userId,
+                name: 'Max',
+                profileUrl: users.find((user) => user.id === userId)?.profileUrl,
             },
             status: 'backlog',
         } as Todo;
         setTodos([...todos, newTodo]);
     };
 
+    const openSideBarHandler = () => {
+        setOpenSideBar(true);
+    };
+
+    const closeSideBarHandler = () => {
+        setOpenSideBar(false);
+    };
+
+    const backlogData = todos.filter((todo) => todo.status === 'backlog');
+    const inProgressData = todos.filter((todo) => todo.status === 'inProgress');
+    const completedData = todos.filter((todo) => todo.status === 'completed');
+
     return (
         <div className="container">
-            <Header />
-            <InputTodo addTodoProps={addTodoItem} />
-            <TodosList
-                todos={todos}
-                handleChangeProps={handleChange}
-                deleteTodoProps={delTodo}
-            />
+            <Header openSideBar={openSideBarHandler} />
+            <SideBar open={openSideBar} onClose={closeSideBarHandler}>
+                <TaskForm onFinish={addTodoItem} users={users} />
+            </SideBar>
+            <Board backlogData={backlogData} inProgressData={inProgressData} completedData={completedData} />
         </div>
     );
 };

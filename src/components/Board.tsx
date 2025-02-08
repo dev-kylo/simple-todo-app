@@ -1,6 +1,8 @@
 import styled from 'styled-components';
+import { useMemo } from 'react';
 import { Status, Todo } from '../types';
 import TodoColumn from './Column';
+import TodoCard from './TodoCard';
 
 const BoardContainer = styled.div`
     display: flex;
@@ -10,21 +12,68 @@ const BoardContainer = styled.div`
     background-color: #1a1a1a;
 `;
 
-const Board = ({ todos }: { todos: Todo[] }) => {
-    const columns: Status[] = ['backlog', 'inProgress', 'completed'];
+const Board = ({
+    backlogData,
+    inProgressData,
+    completedData,
+}: {
+    backlogData: Todo[];
+    inProgressData: Todo[];
+    completedData: Todo[];
+}) => {
+    const backlogCards = useMemo(
+        () =>
+            backlogData.map((todo) => (
+                <TodoCard
+                    key={todo.id}
+                    id={todo.id}
+                    title={todo.title}
+                    description={todo.description}
+                    profileUrl={todo.user.profileUrl}
+                />
+            )),
+        [backlogData]
+    );
 
+    const inProgressCards = useMemo(
+        () =>
+            inProgressData.map((todo) => (
+                <TodoCard
+                    key={todo.id}
+                    id={todo.id}
+                    title={todo.title}
+                    description={todo.description}
+                    profileUrl={todo.user.profileUrl}
+                />
+            )),
+        [inProgressData]
+    );
+
+    const completedCards = useMemo(
+        () =>
+            completedData.map((todo) => (
+                <TodoCard
+                    key={todo.id}
+                    id={todo.id}
+                    title={todo.title}
+                    description={todo.description}
+                    profileUrl={todo.user.profileUrl}
+                />
+            )),
+        [completedData]
+    );
     return (
         <BoardContainer>
             <TodoColumn title="Backlog" id="backlog">
-                CArds
+                {backlogCards}
             </TodoColumn>
 
             <TodoColumn title="In Progress" id="inProgress">
-                CArds
+                {inProgressCards}
             </TodoColumn>
 
             <TodoColumn title="Completed" id="completed">
-                CArds
+                {completedCards}
             </TodoColumn>
         </BoardContainer>
     );

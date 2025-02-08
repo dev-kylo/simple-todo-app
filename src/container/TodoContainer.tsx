@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import Header from '../components/Header';
-import { Todo } from '../types';
+import { Status, Todo } from '../types';
 import SideBar from '../components/SideBar';
 import TaskForm from '../components/Form';
 import Board from '../components/Board';
@@ -47,13 +47,13 @@ const TodoContainer: React.FC = () => {
         },
     ];
 
-    const handleChange = (id: string) => {
+    const handleChange = (id: string, status: Status) => {
         setTodos(
             todos.map((todo) => {
                 if (todo.id === id) {
                     return {
                         ...todo,
-                        status: todo.status === 'backlog' ? 'inProgress' : 'completed',
+                        status,
                     };
                 }
                 return todo;
@@ -100,7 +100,12 @@ const TodoContainer: React.FC = () => {
             <SideBar open={openSideBar} onClose={closeSideBarHandler}>
                 <TaskForm onFinish={addTodoItem} users={users} />
             </SideBar>
-            <Board backlogData={backlogData} inProgressData={inProgressData} completedData={completedData} />
+            <Board
+                updateCardStatus={handleChange}
+                backlogData={backlogData}
+                inProgressData={inProgressData}
+                completedData={completedData}
+            />
         </div>
     );
 };

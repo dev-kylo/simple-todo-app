@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { useDroppable } from '@dnd-kit/core';
 import { Status } from '../types';
 
 const Column = styled.div`
@@ -19,8 +20,14 @@ const ColumnTitle = styled.h2`
 `;
 
 const TodoColumn = ({ title, children, id }: { title: string; children: React.ReactNode; id: Status }) => {
+    const { isOver, setNodeRef } = useDroppable({
+        id,
+    });
+    const style = {
+        backgroundColor: isOver ? 'green' : undefined,
+    };
     return (
-        <Column id={id}>
+        <Column id={id} ref={setNodeRef} style={style}>
             <ColumnTitle>{title}</ColumnTitle>
             {children}
         </Column>

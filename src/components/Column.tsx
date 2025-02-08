@@ -27,7 +27,7 @@ const TodoColumn = ({ title, children, id }: { title: string; children: React.Re
         backgroundColor: isOver ? 'green' : undefined,
     };
     return (
-        <Column id={id} ref={setNodeRef} style={style}>
+        <Column id={id} ref={setNodeRef} style={style} data-testid={id}>
             <ColumnTitle>{title}</ColumnTitle>
             {children}
         </Column>

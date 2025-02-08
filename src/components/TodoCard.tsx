@@ -31,7 +31,10 @@ const TodoCard = ({
 
     return (
         <Container ref={setNodeRef} style={style} {...listeners} {...attributes}>
-            <Card title={title} extra={<img src={profileUrl} alt="" style={{ width: 50, height: 50 }} />}>
+            <Card
+                title={title}
+                extra={<img src={profileUrl} alt="" style={{ width: 50, height: 50 }} data-testid={id} />}
+            >
                 {description}
             </Card>
         </Container>
